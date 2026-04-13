@@ -18,27 +18,10 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-app.post("/salvar", async (req, res) => {
-    console.log(req.body);
+const controller = require("./controllers/testeController");
 
-    const nome = req.body.nome;
-
-    await pool.query(
-        "CREATE TABLE IF NOT EXISTS teste (id SERIAL PRIMARY KEY, nome TEXT)"
-    );
-
-    await pool.query(
-        "INSERT INTO teste (nome) VALUES ($1)",
-        [nome]
-    );
-
-    res.send({ status: "ok", recebido: nome });
-});
-
-app.get("/listar", async (req, res) => {
-    const result = await pool.query("SELECT * FROM teste");
-    res.send(result.rows);
-});
+app.post("/salvar", controller.salvar);
+app.get("/listar", controller.listar);
 
 app.get("/", (req, res) => {
     res.send("API funcionando");
