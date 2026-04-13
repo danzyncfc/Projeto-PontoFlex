@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<body>
+<input id="nome">
+<button onclick="salvar()">Salvar</button>
+<button onclick="listar()">Listar</button>
+
+<pre id="saida"></pre>
+
+<script>
+const API = "https://projeto-pontoflex.onrender.com";
+
+function salvar() {
+    fetch(API + "/salvar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            nome: document.getElementById("nome").value
+        })
+    });
+}
+
+function listar() {
+    fetch(API + "/listar")
+    .then(r => r.json())
+    .then(d => {
+        document.getElementById("saida").textContent =
+            JSON.stringify(d, null, 2);
+    });
+}
+</script>
+</body>
+</html>
