@@ -2,19 +2,19 @@ const express = require("express");
 const { Pool } = require("pg");
 
 const app = express();
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-app.get("/", (req, res) => {
-    res.send("API funcionando");
-});
-
 app.post("/salvar", async (req, res) => {
-    const { nome } = req.body;
+    console.log(req.body);
+
+    const nome = req.body.nome;
 
     await pool.query(
         "CREATE TABLE IF NOT EXISTS teste (id SERIAL PRIMARY KEY, nome TEXT)"
@@ -25,12 +25,16 @@ app.post("/salvar", async (req, res) => {
         [nome]
     );
 
-    res.send({ status: "ok" });
+    res.send({ status: "ok", recebido: nome });
 });
 
 app.get("/listar", async (req, res) => {
     const result = await pool.query("SELECT * FROM teste");
     res.send(result.rows);
+});
+
+app.get("/", (req, res) => {
+    res.send("API funcionando");
 });
 
 app.listen(process.env.PORT || 3000);
